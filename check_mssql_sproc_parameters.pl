@@ -13,13 +13,14 @@
 #		   condition or not.
 # AUTHOR: Bruno Cardoso Cantisano <bruno.cantisano@gmail.com>
 # DATE  : 04/25/2017
+# DATE  : 12/14/2017: Adding custom html page
 #
 # PURPOSE: Updated to allow input parameters and format the results in HTML.
 # ======================================================================
 use DBI;
 use Getopt::Long;
 use HTML::Entities;
-
+use File::Slurp;
 my ($hardcoded, $sql_user, $sql_pass);
 # If you have a universal 'support' login for MS SQL server, set $hardcoded to 1
 # and then set the SQL username and password.
@@ -92,31 +93,26 @@ $sth->{"LongTruncOk"} = 1;
 $sth->execute();
 
 $temHeader = 1;
+$header = "";
 $table = "";
+$footer = "";
 my $ref;
 my $results = "";
 
 $i = 1;
 while($ref = $sth->fetchrow_hashref) {
 	if($temHeader){
-		$table = $table . '<table border=2 width=100%><thead><tr bgcolor=#6b9eef>';
+		$header .= '<div class="box-row header"><table><tr>';
 		foreach my $field ( keys %{ $ref } ) {
 			if($field ne 'retorno'){
-				$table = $table . '<td align=center valign=middle>' . $field . '</td>';
+				$header = $header . '<td>' . $field . '</td>';
 			}
 		}
-		$table = $table . '</tr></thead><tbody>';
+		$header .= '</tr></table></div>';
 		$temHeader = 0;
 	}
 	if($i > 0){ #para não considerar a primeira coluna porque contém o código de retorno
-		if($i % 2 == 0){
-			#par
-			$table = $table . '<tr bgcolor=#d0d8e5>';
-		}
-		else{
-			#impar
-			$table = $table . '<tr bgcolor=#a7b4c9>';
-		}
+		$table .= '<div class="box-row linha"><table><tr>';
 	}
 
 	foreach my $field ( keys %{ $ref } ) {
@@ -124,46 +120,54 @@ while($ref = $sth->fetchrow_hashref) {
 			$results = $ref->{ $field };
 		}
 		else{
-			$table = $table . '<td align=center valign=middle>' . $ref->{ $field } . '</td>';
+			$table .= '<td>' . $ref->{ $field } . '</td>';
 		}
 	}
 
 	if($i > 0){ #para não considerar a primeira coluna porque contém o código de retorno
-		$table = $table . '</tr>';
+		$table .= '</tr></table></div>';
 	}
 
 	$i = $i + 1;
 }
-$table = $table . '</tbody></table>';
-print $table;
-process_results($results);
+
+my $indexFile = read_file('./sproc_html/index.html') or die "could not open filename";
+process_results($results, $indexFile);
 
 $sth->finish();
 $conn{"dbh"}->disconnect();
 
 sub process_results {
 	if($results >= $opt_c) {
-		print_critical($results);
+		print_critical($results, $indexFile);
 	}
 	elsif($results >= $opt_w) {
-		print_warning($results);
+		print_warning($results, $indexFile);
 	}
-	else {
-		print "<table><tr><td>OK: Returned values for stored procedure $opt_proc</td></tr></table>";
+	else {		
+		$footer = '<div class="box-row footer"><table><tr><td>OK: Returned values for stored procedure $opt_proc</td></tr></table></div>';
+		$indexFile =~ s/##CONTENT##/$header$table$footer/g;
+		$indexFile =~ s/##TYPE##/ok/g;
+		$indexFile =~ s/##MESSAGE##/OK: Returned values for stored procedure $opt_proc/g;
 		exit 0;
 	}
 }
 
-sub print_warning($results) {
-print "<table><tr><td>WARNING: SQL Query returned $results for stored procedure '$opt_proc'. The warning threshold is $opt_w.</td></tr></table>";
-exit 1;
+sub print_warning($results, $indexFile) {
+	$footer = '<div class="box-row footer"><table><tr><td>WARNING: SQL Query returned $results. for stored procedure $opt_proc. The warning threshold is $opt_w.</td></tr></table></div>';
+	$indexFile =~ s/##CONTENT##/$header$table$footer/g;
+	$indexFile =~ s/##TYPE##/aviso/g;
+	$indexFile =~ s/##MESSAGE##/WARNING: SQL Query returned $results. for stored procedure $opt_proc/g;
+	exit 1;
 }
 
-sub print_critical($results) {
-print "<table><tr><td>CRITICAL: SQL Query returned $results for stored procedure '$opt_proc'. The critical threshold is $opt_c.</td></tr></table>";
-exit 2;
+sub print_critical($results, $indexFile) {
+	$footer = '<div class="box-row footer"><table><tr><td>CRITICAL: SQL Query returned $results. for stored procedure $opt_proc. The critical threshold is $opt_c.</td></tr></table></div>';
+	$indexFile =~ s/##CONTENT##/$header$table$footer/g;
+	$indexFile =~ s/##TYPE##/erro/g;
+	$indexFile =~ s/##MESSAGE##/CRITICAL: SQL Query returned $results. for stored procedure $opt_proc/g;
+	exit 2;
 }
-
 
 sub print_help {
     print "Usage: $0 -H HOSTNAME -p PROCEDURE -d database -u user -P password -w <warn> -c <crit>\n";
@@ -202,14 +206,8 @@ sub print_help {
     not be visible from the web console or 2. If you have a universal SQL login for all of your Nagios queries, then
     you may hardcode the username & password into the beginning of this script.
 
-
     Send email to jeremy\@pavleck.com or nagios-users\@lists.sourceforge.net if you have questions regarding the use of this
     software. To submit patches or suggest improvements, please email jeremy\@pavleck.com or visit www.Pavleck.com
-
-
-
-
-
 ";
 }
 
@@ -219,4 +217,4 @@ sub print_version {
     Copyright (c) 2005 Jeremy D. Pavleck <jeremy\@pavleck.com>
     This program is free software; you can redistribute it and/or modify it under the same terms as Perl itself.
     ";
-    }
+}

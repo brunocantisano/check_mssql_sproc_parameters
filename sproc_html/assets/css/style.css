@@ -1,0 +1,144 @@
+main {
+  width: 100%;
+}
+
+input {
+  display: none;
+  visibility: hidden;
+}
+
+label {
+  display: block;
+  padding: 0.3em;
+  text-align: left;
+}
+
+label::before {
+  font-family: Consolas, monaco, monospace;
+  font-weight: bold;
+  font-size: 15px;
+  content: "+";
+  vertical-align: text-top;
+  width: 20px;
+  height: 20px;
+  margin-right: 3px;
+}
+
+#expand {
+  height: 0px;
+  overflow: hidden;
+  transition: height 0.5s;
+}
+
+section {
+  padding: 0 20px;
+}
+
+#toggle:checked ~ #expand {
+  height: auto;
+}
+
+#toggle:checked ~ label::before {
+  content: "-";
+}
+
+table:nth-child(even) {background: #99bbff}
+
+table:nth-child(odd) {background:  #4d88ff}
+
+table {
+  width: 100%;
+}
+
+td{
+  font-size:20px;
+}
+
+.info{
+  font-size:20px;  
+  position: absolute;
+  top: 13px;
+  padding-left:30px;
+  width: 100%;
+  height: 20px;
+}
+
+.label_ok{
+  font-size:20px;  
+  position: absolute;
+  top: 13px;
+  padding-left:10px;
+  width: 20px;
+  height: 20px;
+  content:url(../../imgs/ok.png);
+}
+.label_aviso{
+  font-size:20px;  
+  position: absolute;
+  top: 13px;
+  padding-left:10px;
+  width: 20px;
+  height: 20px;
+  content:url(../../imgs/aviso.png);
+}
+.label_erro{
+  font-size:20px;  
+  position: absolute;
+  top: 13px;
+  padding-left:10px;
+  width: 20px;
+  height: 20px;
+  content:url(../../imgs/erro.png);
+}
+
+#primary-links {
+  background: #FF9148 url(../../imgs/menubg.gif) repeat-x;
+  height: 20px;
+}
+
+.boxer {
+	display: table;
+	font-size: 24px;
+	width: 100%;
+	height: 20px;
+}
+
+.boxer .box-row {
+	display: table-row;
+}
+
+div.header{
+  color: white;
+	background-color: #0044cc;
+	text-align: center;
+	height: 20px;
+  font-size:20px;
+}
+
+div.footer{
+  color: white;
+  background-color: #0044cc;
+  text-align: left;
+  height: 20px;
+  font-size:20px;
+  vertical-align: middle;
+}
+
+div.linha
+{
+	text-align: left;
+	padding-left: 2px;
+	vertical-align: middle;
+	height: 20px;
+  font-size:20px;	
+}
+
+div.linha div:nth-of-type(even)
+{
+	background-color: #a7b4c9;
+}
+
+div.linha div:nth-of-type(odd)
+{
+	background-color: #d0d8e5;
+}
