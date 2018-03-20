@@ -21,6 +21,10 @@ must return the first column as an int (procedure return) called "retorno".
 # Usage
 In Sql Server execute this procedure: checaTabProcessos.sql
 
+```bash
+./check_mssql_sproc_parameters.pl -H 127.0.0.1 -u sa -P MyPass -d MyDb -p checaTabProcessos -c 2 -w 1
+```
+
 commands.cfg:
 
 ![ScreenShot](commands.png?raw=true)
