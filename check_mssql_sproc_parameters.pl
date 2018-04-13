@@ -20,7 +20,7 @@
 use DBI;
 use Getopt::Long;
 use HTML::Entities;
-use File::Slurp;
+
 my ($hardcoded, $sql_user, $sql_pass);
 # If you have a universal 'support' login for MS SQL server, set $hardcoded to 1
 # and then set the SQL username and password.
@@ -68,7 +68,7 @@ my $conn;
 $conn{"username"} = $opt_user;
 $conn{"server"} = $opt_host;
 $conn{"password"} = $opt_pw;
-$conn{"dsn"} = "dbi:ODBC:Driver={ODBC Driver 11 for SQL Server};SERVER=" . $conn{"server"};
+$conn{"dsn"} = "dbi:ODBC:Driver={ODBC Driver 17 for SQL Server};SERVER=" . $conn{"server"};
 $conn{"dbh"} = DBI-> connect( $conn{"dsn"}, $conn{"username"}, $conn{"password"})
 	or die "Error: Unable to connect to MS-SQL database!\n", $DBI::errstr,"\n";
 
@@ -98,6 +98,7 @@ $table = "";
 $footer = "";
 my $ref;
 my $results = "";
+
 
 $i = 1;
 while($ref = $sth->fetchrow_hashref) {
@@ -131,7 +132,30 @@ while($ref = $sth->fetchrow_hashref) {
 	$i = $i + 1;
 }
 
-my $indexFile = read_file('./sproc_html/index.html') or die "could not open filename";
+my $indexFile = 
+"<link rel=\"stylesheet\" type=\"text/css\" href=\"./stylesheets/style.css\">
+<main>
+  <input id=\"toggle\" type=\"checkbox\">
+  <label id=\"primary-links\" for=\"toggle\">
+  <div class=\"label_##TYPE##\"></div><span class=\"info\">##TYPE## - ##MESSAGE##</span>
+  </label>
+  <div id=\"expand\">
+    <section>
+		<div id=\"squeeze\">
+			<div class=\"content\">						
+				<div id=\"tabela\"><a href=\"/tabela/\" target=\"_blank\"></a>
+					<div id=\"cp_toggle\">										
+						<div class=\"boxer\">							
+			                	##CONTENT##
+						</div>
+					</div>
+				</div>
+			</div>		
+		</div>
+    </section>
+  </div> 
+</main>";
+
 process_results($results, $indexFile);
 
 $sth->finish();
@@ -149,6 +173,7 @@ sub process_results {
 		$indexFile =~ s/##CONTENT##/$header$table$footer/g;
 		$indexFile =~ s/##TYPE##/ok/g;
 		$indexFile =~ s/##MESSAGE##/OK: Returned values for stored procedure $opt_proc/g;
+		print $indexFile;
 		exit 0;
 	}
 }
@@ -158,6 +183,7 @@ sub print_warning($results, $indexFile) {
 	$indexFile =~ s/##CONTENT##/$header$table$footer/g;
 	$indexFile =~ s/##TYPE##/aviso/g;
 	$indexFile =~ s/##MESSAGE##/WARNING: SQL Query returned $results. for stored procedure $opt_proc/g;
+	print $indexFile;
 	exit 1;
 }
 
@@ -166,6 +192,7 @@ sub print_critical($results, $indexFile) {
 	$indexFile =~ s/##CONTENT##/$header$table$footer/g;
 	$indexFile =~ s/##TYPE##/erro/g;
 	$indexFile =~ s/##MESSAGE##/CRITICAL: SQL Query returned $results. for stored procedure $opt_proc/g;
+	print $indexFile;
 	exit 2;
 }
 
