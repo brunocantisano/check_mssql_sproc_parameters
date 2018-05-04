@@ -19,16 +19,15 @@ doesn't work. This code update fixes this problem, but the procedure
 must return the first column as an int (procedure return) called "retorno".
 
 # Usage
--In Sql Server, create this procedure: checaTabProcessos.sql
--Insert these lines inside <head></head> tag in main html.
-
+ * In Sql Server, create this procedure: checaTabProcessos.sql
+ * Insert these lines inside <head></head> tag in main html.
 ```
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 <LINK REL='stylesheet' TYPE='text/css' HREF='stylesheets/style.css' />
-```
-
--Copy sproc_html\assets\css\style.css to nagios stylesheets folder.
--Copy sproc_html\imgs\* to nagios images folder.
+``` 
+ * Copy sproc_html\assets\css\style.css to nagios stylesheets folder.
+ * Copy sproc_html\imgs\* to nagios images folder.
+ * Running:
 
 ```bash
 ./check_mssql_sproc_parameters.pl -H 127.0.0.1 -u sa -P MyPass -d MyDb -p checaTabProcessos -c 2 -w 1
