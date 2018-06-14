@@ -15,6 +15,7 @@
 # DATE  : 04/25/2017
 # DATE  : 12/14/2017: Adding custom html page
 # DATE  : 05/04/2018: Fixing html. It's not using anymore a file to 
+# DATE  : 14/06/2018: Changing ODBC version
 # assemble the html.
 #
 # PURPOSE: Updated to allow input parameters and format the results in HTML.
@@ -70,7 +71,7 @@ my $conn;
 $conn{"username"} = $opt_user;
 $conn{"server"} = $opt_host;
 $conn{"password"} = $opt_pw;
-$conn{"dsn"} = "dbi:ODBC:Driver={ODBC Driver 11 for SQL Server};SERVER=" . $conn{"server"};
+$conn{"dsn"} = "dbi:ODBC:Driver={ODBC Driver 17 for SQL Server};SERVER=" . $conn{"server"};
 $conn{"dbh"} = DBI-> connect( $conn{"dsn"}, $conn{"username"}, $conn{"password"})
         or die "Error: Unable to connect to MS-SQL database!\n", $DBI::errstr,"\n";
 
