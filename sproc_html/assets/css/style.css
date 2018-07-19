@@ -55,7 +55,7 @@ td{
 }
 
 .info{
-  font-size:20px;  
+  font-size:20px;
   position: absolute;
   top: 13px;
   padding-left:30px;
@@ -64,35 +64,35 @@ td{
 }
 
 .label_ok{
-  font-size:20px;  
+  font-size:20px;
   position: absolute;
   top: 13px;
   padding-left:10px;
   width: 20px;
   height: 20px;
-  content:url(../../imgs/ok.png);
+  content:url(../images/ok.png);
 }
 .label_aviso{
-  font-size:20px;  
+  font-size:20px;
   position: absolute;
   top: 13px;
   padding-left:10px;
   width: 20px;
   height: 20px;
-  content:url(../../imgs/aviso.png);
+  content:url(../images/aviso.png);
 }
 .label_erro{
-  font-size:20px;  
+  font-size:20px;
   position: absolute;
   top: 13px;
   padding-left:10px;
   width: 20px;
   height: 20px;
-  content:url(../../imgs/erro.png);
+  content:url(../images/erro.png);
 }
 
 #primary-links {
-  background: #FF9148 url(../../imgs/menubg.gif) repeat-x;
+  background: #FF9148 url(../images/menubg.gif) repeat-x;
   height: 20px;
 }
 
