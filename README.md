@@ -176,8 +176,10 @@ isql -v MyMSSQLServer monitor MyPass
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 <LINK REL='stylesheet' TYPE='text/css' HREF='stylesheets/style.css' />
 ``` 
- * Copy `sproc_html\assets\css\style.css` to nagios stylesheets folder.
- * Copy `sproc_html\imgs\*` to nagios images folder.
+ * Edit `sproc_html\assets\css\style.css` and minimize using: https://cssminifier.com/
+ * Edit line 2, adding the css minimized in the customCSS variable inside the file: `sproc_html\assets\js\nag_funcs.js`
+ * Append `sproc_html\assets\js\nag_funcs.js` to `/usr/local/nagios/share/js/nag_funcs.js`
+ * Copy `sproc_html\images\*` to `/usr/local/nagios/share/images`
  * Running:
 
  ```bash
@@ -191,3 +193,7 @@ commands.cfg:
 services.cfg:
 
 ![ScreenShot](services.png?raw=true)
+
+screenshot example:
+
+![ScreenShot](example.png?raw=true)

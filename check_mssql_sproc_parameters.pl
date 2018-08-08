@@ -96,63 +96,26 @@ $sth->{"LongTruncOk"} = 1;
 $sth->execute();
 
 $temHeader = 1;
-$table = '<script>
-           $(function(){    
-                $("#toggle").click(function(){
-                    if($("#' . $opt_proc . '").find("tbody").is(":visible") == true){
-                      $("#' . $opt_proc . '").find("tbody").hide();
-                      $("#toggle").val("+");
-                    }
-                    else{   
-                      $("#' . $opt_proc . '").find("tbody").show();
-                      $("#toggle").val("-");
-                    }
-                });
-                $("#' . $opt_proc . '").find("tbody").hide();
-           });
-          </script>
-          <table class="table table-striped" id="' . $opt_proc . '">
-           <thead>
-                <tr>
-                    <td>
-                        <input id="toggle" type="checkbox">
-                        <label id="primary-links" for="toggle">
-                            <div class="label_##LABEL##"></div>
-                            <span class="info">##TYPE##: SQL Query returned ' . $results . ' for stored procedure ' . $opt_proc . '</span>
-                        </label>
-                    </td>
-                </tr>
-           </thead>
-           <tbody>';
-
 my $ref;
 my $results = "";
+my $info = "";
 
 $i = 1;
 while($ref = $sth->fetchrow_hashref) {
         if($temHeader){
             $temHeader = 0;
         }
-        if($i > 0){ #para não considerar a primeira coluna porque contém o código de retorno
-            $table .= '<tr>';        
-        }
-
         foreach my $field ( keys %{ $ref } ) {
             if($field eq 'retorno'){
                     $results = $ref->{ $field };
             }
             else{
-                    $table .= '<td>' . $ref->{ $field } . '</td>';
+                    $info .= $ref->{ $field } . '@';
             }
         }
-
-        if($i > 0){ #para não considerar a primeira coluna porque contém o código de retorno
-            $table .= '</tr>';
-        }
-
-        $i = $i + 1;
 }
-$table .= '</tbody></table>';
+$table = $opt_proc . '*label_##LABEL##*##TYPE##*SQL Query returned ' . $results . ' for stored procedure ' . $opt_proc . '*' . $info;
+
 process_results($results);
 
 $sth->finish();
