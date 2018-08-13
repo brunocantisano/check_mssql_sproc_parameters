@@ -9,8 +9,8 @@
 # DATE  : 10/25/2005
 #
 # PURPOSE: Runs a stored proc on a remote MS SQL server and returns the
-#		   result. Then logic is applied to determine if there is an error
-#		   condition or not.
+#          result. Then logic is applied to determine if there is an error
+#          condition or not.
 # AUTHOR: Bruno Cardoso Cantisano <bruno.cantisano@gmail.com>
 # DATE  : 04/25/2017
 # DATE  : 12/14/2017: Adding custom html page
@@ -23,6 +23,7 @@
 use DBI;
 use Getopt::Long;
 use HTML::Entities;
+use Encode;
 
 my ($hardcoded, $sql_user, $sql_pass);
 # If you have a universal 'support' login for MS SQL server, set $hardcoded to 1
@@ -95,26 +96,39 @@ $sth->{"LongTruncOk"} = 1;
 
 $sth->execute();
 
-$temHeader = 1;
 my $ref;
 my $results = "";
 my $info = "";
 
+#Get columns name from query
 $i = 1;
-while($ref = $sth->fetchrow_hashref) {
-        if($temHeader){
-            $temHeader = 0;
-        }
-        foreach my $field ( keys %{ $ref } ) {
-            if($field eq 'retorno'){
-                    $results = $ref->{ $field };
-            }
-            else{
-                    $info .= $ref->{ $field } . '@';
-            }
-        }
+my $colNames = $sth->{NAME};
+foreach my $colName ( @{$colNames}) {
+   if($i > 1) {
+     $info .= encode('utf-8', $colName) . '↔';
+   }
+   $i = $i + 1;
 }
-$table = $opt_proc . '*label_##LABEL##*##TYPE##*SQL Query returned ' . $results . ' for stored procedure ' . $opt_proc . '*' . $info;
+$info .= '∟';
+
+#Get fields from query
+while($ref = $sth->fetchrow_arrayref) {
+    $i = 1;
+    foreach my $field ( @{ $ref } ) {
+        if($i > 1){
+            $info .= ($field ? $field : "-") . '↔';
+        }
+        else {
+            #codigo de retorno
+            $results = $field;
+        }
+        $i = $i + 1;
+    } 
+    $info .= '∟';
+}
+
+#descriptions: ←-alt+27 (header), ∟-alt+28 (line) and ↔-alt+29 (row)
+$table = 'header←' . $opt_proc . '←label_#LABEL#←#TYPE#←' . $results . '←'. $info;
 
 process_results($results);
 
@@ -136,24 +150,24 @@ sub process_results {
 }
 
 sub print_ok($results) {
-    $table =~ s/##LABEL##/ok/g;
-    $table =~ s/##TYPE##/OK/g;
+    $table =~ s/#LABEL#/ok/g;
+    $table =~ s/#TYPE#/OK/g;
     
     print $table;
     exit 0;
 }
 
 sub print_warning($results) {
-    $table =~ s/##LABEL##/aviso/g;
-    $table =~ s/##TYPE##/WARNING/g;
+    $table =~ s/#LABEL#/aviso/g;
+    $table =~ s/#TYPE#/WARNING/g;
 
     print $table;
     exit 1;
 }
 
 sub print_critical($results) {
-    $table =~ s/##LABEL##/erro/g;
-    $table =~ s/##TYPE##/CRITICAL/g;
+    $table =~ s/#LABEL#/erro/g;
+    $table =~ s/#TYPE#/CRITICAL/g;
 
     print $table;
     exit 2;
