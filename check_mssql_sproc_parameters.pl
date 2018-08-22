@@ -15,8 +15,8 @@
 # DATE  : 04/25/2017
 # DATE  : 12/14/2017: Adding custom html page
 # DATE  : 05/04/2018: Fixing html. It's not using anymore a file to 
+# assemble the html
 # DATE  : 14/06/2018: Changing ODBC version
-# assemble the html.
 #
 # PURPOSE: Updated to allow input parameters and format the results in HTML.
 # ======================================================================
@@ -76,17 +76,9 @@ $conn{"dsn"} = "dbi:ODBC:Driver={ODBC Driver 17 for SQL Server};SERVER=" . $conn
 $conn{"dbh"} = DBI-> connect( $conn{"dsn"}, $conn{"username"}, $conn{"password"})
         or die "Error: Unable to connect to MS-SQL database!\n", $DBI::errstr,"\n";
 
-$nomeProc =  substr $opt_proc, 0, index($opt_proc, ' ');
 $paramsProc = join("", split(/[aA-zZ]|[0-9]|"/, $opt_proc, -1));
 $paramsProc = substr $paramsProc, 2, length($paramsProc)-2;
 $paramsProc =~ s/ /?/g;
-
-my $sql = qq|
-        begin
-                use $opt_db
-                exec $opt_proc
-        end|;
-
 
 my $sql = qq{ use $opt_db exec $opt_proc };
 my $sth = $conn{"dbh"}->prepare( $sql );
@@ -152,7 +144,7 @@ sub process_results {
 sub print_ok($results) {
     $table =~ s/#LABEL#/ok/g;
     $table =~ s/#TYPE#/OK/g;
-    
+
     print $table;
     exit 0;
 }

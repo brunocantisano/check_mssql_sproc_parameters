@@ -182,8 +182,13 @@ isql -v MyMSSQLServer monitor MyPass
  * Copy `sproc_html\images\*` to `/usr/local/nagios/share/images`
  * Running:
 
- ```bash
+```bash
 ./check_mssql_sproc_parameters.pl -H 127.0.0.1 -u monitor -P MyPass -d MyDb -p checaTabProcessos -c 2 -w 1
+```
+
+ * Executing with parameters
+```bash
+./check_mssql_sproc_parameters.pl -H 127.0.0.1 -u monitor -P MyPass -d MyDb -p "checaTabProcessos blablabla" -c 2 -w 1
 ```
 
 commands.cfg:
