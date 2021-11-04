@@ -1,6 +1,8 @@
 # check_mssql_sproc_parameters plugin
 Nagios plugin for executing procedures with input parameters to MS SQL Server
 
+![Perl_MsSql_Plugin](sproc_html/images/perl_mssql_plugin.png)
+
 Executing procedures in mssql server with parameters, formatting results in HTML.
 ps.: It uses only input parameters, output parameteres are not considered.
 
