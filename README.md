@@ -2,6 +2,7 @@
 Nagios plugin for executing procedures with input parameters to MS SQL Server
 
 ![Perl_MsSql_Plugin](sproc_html/images/perl_mssql_plugin.png)
+<a href='https://ko-fi.com/brunocantisano' target='_blank'><img height='15' style='border:0px;height:26px;' src='https://az743702.vo.msecnd.net/cdn/kofi3.png?v=0' border='0' alt='Buy Me a Coffee at ko-fi.com' />
 
 Executing procedures in mssql server with parameters, formatting results in HTML.
 ps.: It uses only input parameters, output parameteres are not considered.
